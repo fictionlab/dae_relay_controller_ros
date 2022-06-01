@@ -1,0 +1,14 @@
+<launch>
+
+    <arg name="device" default="/dev/relay"/>
+    <arg name="module_type" default="type16"/>
+
+    <node name="relay_node"
+        pkg="dae_relay_controller_ros"
+        type="relay_node.py"
+        respawn="true">
+    <param name="device" value="$(arg device)"/>
+    <param name="module_type" value="$(arg module_type)"/>
+    </node>
+
+</launch>
