@@ -9,6 +9,7 @@ import argparse
 from dae_relay_controller_ros.srv import *
 import dae_RelayBoard
 
+
 def set_callback(msg):
     dr.setState(msg.relay_number, msg.state)
     time.sleep(0.5)
@@ -59,29 +60,14 @@ except rospy.ROSInterruptException as e:
     rospy.loginfo("Relay node error!")
     rospy.logerr(e)
 
-parser = argparse.ArgumentParser()
+device = rospy.get_param("~device", "/dev/relay")
+type = rospy.get_param("~module_type", "type16")
 
-parser.add_argument(
-    "-d",
-    dest="device",
-    default="/dev/relay",
-    help="device",
-)
+dr = dae_RelayBoard.DAE_RelayBoard(type)
+dr.initialise(device)
 
-parser.add_argument(
-    "-t",
-    dest="type",
-    default="type16",
-    help="device type",
-)
-
-args = parser.parse_args()
-
-dr = dae_RelayBoard.DAE_RelayBoard(args.type)
-dr.initialise(args.device)
-
-rospy.loginfo("Device type: %s", args.type)
-rospy.loginfo("Device path: %s", args.device)
+rospy.loginfo("Device type: %s", type)
+rospy.loginfo("Device path: %s", device)
 
 dr.setAllStatesOff()
 
