@@ -1,6 +1,6 @@
 # dae_relay_controller_ros
 
-A ROS package for relay's module comunication.
+A ROS package for relay's module comunication. Based on python lib [dae-py-relay-controller](https://github.com/petersbingham/dae-py-relay-controller)
 
 ### Relay module
 
@@ -16,4 +16,14 @@ KERNEL=="ttyUSB*", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666
 Reload udev rules:
 ``` 
 sudo udevadm control --reload-rules && sudo udevadm trigger
+``` 
+
+### Start node 
+
+``` 
+rosrun dae_relay_controller_ros relay_node.py device:="/dev/relay" module_type:="type16"
+``` 
+or
+``` 
+roslaunch dae_relay_controller_ros example.launch
 ``` 
