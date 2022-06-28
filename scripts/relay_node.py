@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 
-from tokenize import String
 import rospy
 import time
 
-import argparse
-
-from dae_relay_controller_ros.srv import *
+from dae_relay_controller_ros.srv import (
+    SetRelay,
+    GetRelay,
+    SetAllRelays,
+    SetRelayResponse,
+    GetRelayResponse,
+    SetAllRelaysResponse,
+)
 import dae_RelayBoard
 
 
@@ -50,9 +54,9 @@ def set_all_callback(msg):
 try:
     rospy.init_node("relay_node")
 
-    set_relay_srv = rospy.Service("relay/set_relay", SetRelay, set_callback)
-    set_all_relays = rospy.Service("relay/get_relay", GetRelay, get_callback)
-    get_relay = rospy.Service("relay/set_relay/all", SetAllRelays, set_all_callback)
+    set_relay_srv = rospy.Service("~set_relay", SetRelay, set_callback)
+    set_all_relays = rospy.Service("~get_relay", GetRelay, get_callback)
+    get_relay = rospy.Service("~set_all_relays", SetAllRelays, set_all_callback)
 
     rospy.loginfo("Relay node started!")
 
