@@ -16,6 +16,7 @@
   <build_depend>message_generation</build_depend>
   <exec_depend>message_runtime</exec_depend>
 
+  <exec_depend>libftdi1-dev</exec_depend>
   <exec_depend>python-pylibftdi-pip</exec_depend>
 
 </package>
