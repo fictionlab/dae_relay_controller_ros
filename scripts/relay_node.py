@@ -5,10 +5,10 @@ import time
 
 from dae_relay_controller_ros.srv import (
     SetRelay,
-    GetRelay,
+    GetAllRelays,
     SetAllRelays,
     SetRelayResponse,
-    GetRelayResponse,
+    GetAllRelaysResponse,
     SetAllRelaysResponse,
 )
 import dae_RelayBoard
@@ -24,7 +24,7 @@ def set_callback(msg):
     else:
         is_ok = False
 
-    return SetRelayResponse(is_ok, "")
+    return SetRelayResponse(is_ok)
 
 
 def get_callback(msg):
@@ -34,7 +34,7 @@ def get_callback(msg):
     for tmp in state:
         state_arr[tmp - 1] = state[tmp]
 
-    return GetRelayResponse(state_arr, "")
+    return GetAllRelaysResponse(True, state_arr)
 
 
 def set_all_callback(msg):
@@ -48,14 +48,14 @@ def set_all_callback(msg):
         if resp[tmp] != msg.state:
             is_ok = False
 
-    return SetAllRelaysResponse(is_ok, "")
+    return SetAllRelaysResponse(is_ok)
 
 
 try:
     rospy.init_node("relay_node")
 
     set_relay_srv = rospy.Service("~set_relay", SetRelay, set_callback)
-    set_all_relays = rospy.Service("~get_relay", GetRelay, get_callback)
+    set_all_relays = rospy.Service("~get_all_relays", GetAllRelays, get_callback)
     get_relay = rospy.Service("~set_all_relays", SetAllRelays, set_all_callback)
 
     rospy.loginfo("Relay node started!")

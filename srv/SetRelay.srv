@@ -1,5 +1,4 @@
-int32 relay_number
+uint8 relay_number
 bool state
 ---
-bool status
-string message
+bool success
