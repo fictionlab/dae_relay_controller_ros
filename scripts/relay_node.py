@@ -48,7 +48,6 @@ def set_all_callback(msg):
     dr.setAllStatesOn() if msg.state else dr.setAllStatesOff()
 
     resp = dr.getStates()
-    print(resp)
 
     for tmp in resp:
         if resp[tmp] != msg.state:
@@ -57,28 +56,22 @@ def set_all_callback(msg):
     return SetAllRelaysResponse(is_ok)
 
 
-try:
-    rospy.init_node("relay_node")
-
-    set_relay_srv = rospy.Service("~set_relay", SetRelay, set_callback)
-    set_all_relays = rospy.Service("~get_all_relays", GetAllRelays, get_callback)
-    get_relay = rospy.Service("~set_all_relays", SetAllRelays, set_all_callback)
-
-    rospy.loginfo("Relay node started!")
-
-except rospy.ROSInterruptException as e:
-    rospy.loginfo("Relay node error!")
-    rospy.logerr(e)
+rospy.init_node("relay_node")
 
 device = rospy.get_param("~device", "/dev/relay")
 type = rospy.get_param("~module_type", "type16")
 
 dr = dae_RelayBoard.DAE_RelayBoard(type)
 dr.initialise(device)
+dr.setAllStatesOff()
 
 rospy.loginfo("Device type: %s", type)
-rospy.loginfo("Device path: %s", device)
+rospy.loginfo("Device path/id: %s", device)
 
-dr.setAllStatesOff()
+set_relay_srv = rospy.Service("~set_relay", SetRelay, set_callback)
+set_all_relays_srv = rospy.Service("~get_all_relays", GetAllRelays, get_callback)
+get_all_relays_srv = rospy.Service("~set_all_relays", SetAllRelays, set_all_callback)
+
+rospy.loginfo("Relay node started!")
 
 rospy.spin()
