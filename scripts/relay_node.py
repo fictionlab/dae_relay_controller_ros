@@ -29,7 +29,7 @@ def set_callback(msg):
 
 def get_callback(msg):
     state = dr.getStates()
-    state_arr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    state_arr = [False] * len(state)
 
     for tmp in state:
         state_arr[tmp - 1] = state[tmp]
