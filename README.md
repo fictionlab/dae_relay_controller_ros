@@ -21,7 +21,7 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 ### Start node 
 
 ``` 
-rosrun dae_relay_controller_ros relay_node.py device:="/dev/relay" module_type:="type16"
+rosrun dae_relay_controller_ros relay_node.py _device:="/dev/relay" _module_type:="type16"
 ``` 
 or
 ``` 
