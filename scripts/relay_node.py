@@ -12,10 +12,16 @@ from dae_relay_controller_ros.srv import (
     SetAllRelaysResponse,
 )
 import dae_RelayBoard
+from dae_RelayBoard.dae_RelayBoard_Common import Denkovi_Exception
 
 
 def set_callback(msg):
-    dr.setState(msg.relay_number, msg.state)
+    try:
+        dr.setState(msg.relay_number, msg.state)
+    except Denkovi_Exception as e:
+        rospy.logerr(f"Failed to set relay state: {e}")
+        return SetRelayResponse(False)
+
     time.sleep(0.5)
     resp = dr.getStates()
 
