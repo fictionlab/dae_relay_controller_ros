@@ -9,6 +9,10 @@ catkin_python_setup()
 
 add_service_files(
   DIRECTORY srv
+  FILES
+    GetAllRelays.srv
+    SetAllRelays.srv
+    SetRelay.srv
 )
 
 generate_messages()
