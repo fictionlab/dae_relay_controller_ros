@@ -22,14 +22,7 @@ def set_callback(msg):
         rospy.logerr(f"Failed to set relay state: {e}")
         return SetRelayResponse(False)
 
-    resp = dr.getStates()
-
-    if resp[msg.relay_number] == msg.state:
-        is_ok = True
-    else:
-        is_ok = False
-
-    return SetRelayResponse(is_ok)
+    return SetRelayResponse(True)
 
 
 def get_callback(msg):
