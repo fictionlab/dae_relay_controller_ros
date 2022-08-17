@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
+import threading
+
 import rospy
-import time
 
 from dae_relay_controller_ros.srv import (
     SetRelay,
@@ -16,36 +17,39 @@ from dae_RelayBoard.dae_RelayBoard_Common import Denkovi_Exception
 
 
 def set_callback(msg):
-    try:
-        dr.setState(msg.relay_number, msg.state)
-    except Denkovi_Exception as e:
-        rospy.logerr(f"Failed to set relay state: {e}")
-        return SetRelayResponse(False)
+    with lock:
+        try:
+            dr.setState(msg.relay_number, msg.state)
+        except Denkovi_Exception as e:
+            rospy.logerr(f"Failed to set relay state: {e}")
+            return SetRelayResponse(False)
 
-    return SetRelayResponse(True)
+        return SetRelayResponse(True)
 
 
 def get_callback(msg):
-    state = dr.getStates()
-    state_arr = [False] * len(state)
+    with lock:
+        state = dr.getStates()
+        state_arr = [False] * len(state)
 
-    for tmp in state:
-        state_arr[tmp - 1] = state[tmp]
+        for tmp in state:
+            state_arr[tmp - 1] = state[tmp]
 
-    return GetAllRelaysResponse(True, state_arr)
+        return GetAllRelaysResponse(True, state_arr)
 
 
 def set_all_callback(msg):
-    is_ok = True
-    dr.setAllStatesOn() if msg.state else dr.setAllStatesOff()
+    with lock:
+        is_ok = True
+        dr.setAllStatesOn() if msg.state else dr.setAllStatesOff()
 
-    resp = dr.getStates()
+        resp = dr.getStates()
 
-    for tmp in resp:
-        if resp[tmp] != msg.state:
-            is_ok = False
+        for tmp in resp:
+            if resp[tmp] != msg.state:
+                is_ok = False
 
-    return SetAllRelaysResponse(is_ok)
+        return SetAllRelaysResponse(is_ok)
 
 
 rospy.init_node("relay_node")
@@ -59,6 +63,8 @@ dr.setAllStatesOff()
 
 rospy.loginfo("Device type: %s", type)
 rospy.loginfo("Device path/id: %s", device)
+
+lock = threading.Lock()
 
 set_relay_srv = rospy.Service("~set_relay", SetRelay, set_callback)
 set_all_relays_srv = rospy.Service("~get_all_relays", GetAllRelays, get_callback)
