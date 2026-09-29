@@ -18,12 +18,20 @@ Reload udev rules:
 sudo udevadm control --reload-rules && sudo udevadm trigger
 ``` 
 
+### Dependencies
+
+On Ubuntu 24.04 (ROS 2 Jazzy):
+```bash
+sudo apt install python3-serial libftdi1-2
+pip install --break-system-packages --user pylibftdi
+```
+
 ### Start node 
 
 ``` 
-rosrun dae_relay_controller_ros relay_node.py _device:="/dev/relay" _module_type:="type16"
+ros2 run dae_relay_controller_ros relay_node.py --ros-args -p device:="/dev/relay" -p module_type:="type16"
 ``` 
 or
 ``` 
-roslaunch dae_relay_controller_ros example.launch
+ros2 launch dae_relay_controller_ros example.launch.xml
 ``` 

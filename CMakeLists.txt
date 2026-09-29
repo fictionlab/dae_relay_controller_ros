@@ -1,33 +1,35 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(dae_relay_controller_ros)
 
-find_package(catkin REQUIRED COMPONENTS
-  message_generation
+find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/GetAllRelays.srv"
+  "srv/SetAllRelays.srv"
+  "srv/SetRelay.srv"
 )
 
-catkin_python_setup()
-
-add_service_files(
-  DIRECTORY srv
-  FILES
-    GetAllRelays.srv
-    SetAllRelays.srv
-    SetRelay.srv
-)
-
-generate_messages()
-
-catkin_package(
-	CATKIN_DEPENDS message_runtime
+ament_python_install_package(dae_RelayBoard
+  PACKAGE_DIR "src/dae_RelayBoard"
 )
 
 install(
-  DIRECTORY 
-    launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  PROGRAMS
+    scripts/relay_node.py
+  DESTINATION lib/${PROJECT_NAME}
 )
 
-catkin_install_python(PROGRAMS 
-  scripts/relay_node.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+install(
+  DIRECTORY
+    launch
+  DESTINATION share/${PROJECT_NAME}
 )
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+ament_package()
